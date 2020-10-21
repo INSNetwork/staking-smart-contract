@@ -4,7 +4,6 @@ import "@openzeppelin/contracts/math/Math.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
-import "./IRewardDistributionRecipient.sol";
 
 contract LPTokenWrapper {
     using SafeMath for uint256;
@@ -36,7 +35,7 @@ contract LPTokenWrapper {
     }
 }
 
-contract Unipool is LPTokenWrapper, IRewardDistributionRecipient {
+contract Unipool is LPTokenWrapper, Ownable {
     IERC20 public instar = IERC20(0x8193711b2763Bc7DfD67Da0d6C8c26642eafDAF3);
     uint256 public constant DURATION = 30 days;
     
@@ -101,7 +100,7 @@ contract Unipool is LPTokenWrapper, IRewardDistributionRecipient {
 
     function withdraw(uint256 amount) public updateReward(msg.sender) {
         require(amount > 0, "Cannot withdraw 0");
-        require(block.timestamp > stakeTimestamp[msg.sender] + lockTime, "Cannot withdraw until locktime has exceeded")
+        require(block.timestamp >= stakeTimestamp[msg.sender] + lockTime, "Cannot withdraw until locktime has exceeded");
         super.withdraw(amount);
         emit Withdrawn(msg.sender, amount);
     }
@@ -120,7 +119,7 @@ contract Unipool is LPTokenWrapper, IRewardDistributionRecipient {
         }
     }
 
-    function setLocktime(uint _lockTime) external {
+    function setLocktime(uint _lockTime) external onlyOwner {
         lockTime = _lockTime;
         emit LockTimeAdded(_lockTime);
     }

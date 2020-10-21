@@ -47,7 +47,6 @@ contract('Unipool', function ([_, wallet1, wallet2, wallet3, wallet4]) {
             this.instarToken = await InstarToken.new(wallet1);
             this.unipool = await Unipool.new(this.uniswapToken.address, this.instarToken.address);
 
-            await this.unipool.setRewardDistribution(wallet1);
             await this.uniswapToken.mint(wallet1, web3.utils.toWei('1000'));
             await this.uniswapToken.mint(wallet2, web3.utils.toWei('1000'));
             await this.uniswapToken.mint(wallet3, web3.utils.toWei('1000'));
@@ -252,6 +251,19 @@ contract('Unipool', function ([_, wallet1, wallet2, wallet3, wallet4]) {
             this.unipool.notifyRewardAmount(web3.utils.toWei((originalAwardAmount - 9000).toString()), { from: wallet1 });
 
             expect(await this.unipool.rewardRate()).to.be.bignumber.lessThan(originalRewardRate);
+        });
+
+        it('10 day lock time is enforced when withdrawing', async function () {
+            await this.unipool.notifyRewardAmount(web3.utils.toWei('10000'), { from: wallet1 });
+            await this.unipool.setLocktime(time.duration.days(10), { from: _ });
+            await this.unipool.stake(web3.utils.toWei('1'), { from: wallet3 });
+            await timeIncreaseTo(this.started.add(time.duration.days(6)));
+
+            await expectRevert(this.unipool.exit({ from: wallet3 }), 'Cannot withdraw until locktime has exceeded');
+
+            await timeIncreaseTo(this.started.add(time.duration.days(11)));
+            await this.unipool.exit({ from: wallet3 });
+            expect(await this.unipool.balanceOf(wallet3)).to.be.bignumber.equal('0');
         });
     });
 });
