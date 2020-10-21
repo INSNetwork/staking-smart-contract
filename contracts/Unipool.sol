@@ -39,15 +39,18 @@ contract LPTokenWrapper {
 contract Unipool is LPTokenWrapper, IRewardDistributionRecipient {
     IERC20 public instar = IERC20(0x8193711b2763Bc7DfD67Da0d6C8c26642eafDAF3);
     uint256 public constant DURATION = 30 days;
-
+    
+    uint public lockTime = 0;
     uint256 public periodFinish = 0;
     uint256 public rewardRate = 0;
     uint256 public lastUpdateTime;
     uint256 public rewardPerTokenStored;
     mapping(address => uint256) public userRewardPerTokenPaid;
     mapping(address => uint256) public rewards;
+    mapping(address => uint) public stakeTimestamp;
 
     event RewardAdded(uint256 reward);
+    event LockTimeAdded(uint lockTime);
     event Staked(address indexed user, uint256 amount);
     event Withdrawn(address indexed user, uint256 amount);
     event RewardPaid(address indexed user, uint256 reward);
@@ -91,12 +94,14 @@ contract Unipool is LPTokenWrapper, IRewardDistributionRecipient {
     // stake visibility is public as overriding LPTokenWrapper's stake() function
     function stake(uint256 amount) public updateReward(msg.sender) {
         require(amount > 0, "Cannot stake 0");
+        stakeTimestamp[msg.sender] = block.timestamp;
         super.stake(amount);
         emit Staked(msg.sender, amount);
     }
 
     function withdraw(uint256 amount) public updateReward(msg.sender) {
         require(amount > 0, "Cannot withdraw 0");
+        require(block.timestamp > stakeTimestamp[msg.sender] + lockTime, "Cannot withdraw until locktime has exceeded")
         super.withdraw(amount);
         emit Withdrawn(msg.sender, amount);
     }
@@ -113,6 +118,11 @@ contract Unipool is LPTokenWrapper, IRewardDistributionRecipient {
             instar.safeTransfer(msg.sender, reward);
             emit RewardPaid(msg.sender, reward);
         }
+    }
+
+    function setLocktime(uint _lockTime) external {
+        lockTime = _lockTime;
+        emit LockTimeAdded(_lockTime);
     }
 
     function notifyRewardAmount(uint256 _amount)
