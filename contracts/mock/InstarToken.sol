@@ -3,13 +3,13 @@ pragma solidity ^0.5.9;
 import '@openzeppelin/contracts/token/ERC20/ERC20Pausable.sol';
 import '@openzeppelin/contracts/ownership/Ownable.sol';
 
-contract UltraToken is ERC20Pausable, Ownable {
+contract InstarToken is ERC20Pausable, Ownable {
     using SafeMath for uint256;
     //  using Math     for uint256;
 
-    string  private _name = "Ultra Token";
-    string  private _symbol = "UOS";
-    uint8   private _decimals = 4;      // the token precision on UOS mainnet is 4, can be adjusted there as necessary.
+    string  private _name = "Instar Token";
+    string  private _symbol = "INSTAR";
+    uint8   private _decimals = 4;      // the token precision on INSTAR mainnet is 4, can be adjusted there as necessary.
 
     /*  0-------------------------------------->  time in month(30 days)
      *  ^               ^                   ^
@@ -38,7 +38,7 @@ contract UltraToken is ERC20Pausable, Ownable {
     mapping (address => bool)   private _updateApproval;    // whether allow an account to update its registerred eos key
 
     constructor() public {
-        _mint(address(this), uint256(1000000000).mul(10**uint256(_decimals)));  // mint all tokens and send to the contract, 1,000,000,000 UOS;
+        _mint(address(this), uint256(1000000000).mul(10**uint256(_decimals)));  // mint all tokens and send to the contract, 1,000,000,000 INSTAR;
         _deployTime = block.timestamp;
     }
 
@@ -190,7 +190,7 @@ contract UltraToken is ERC20Pausable, Ownable {
     }
 
     function update(string memory EOSKey) public returns (bool) {
-        require(_updateApproval[msg.sender], "Need approval from ultra after contract is frozen");
+        require(_updateApproval[msg.sender], "Need approval from instar after contract is frozen");
         _register(EOSKey);
         return true;
     }

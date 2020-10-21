@@ -1,5 +1,5 @@
 {
-  "name": "ultra-unipool",
+  "name": "instar-unipool",
   "version": "0.0.1",
   "description": "",
   "repository": {
@@ -8,7 +8,9 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@openzeppelin/contracts": "^2.4.0"
+    "@openzeppelin/contracts": "^2.4.0",
+    "ethereumjs-tx": "^2.1.2",
+    "web3": "^1.3.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
