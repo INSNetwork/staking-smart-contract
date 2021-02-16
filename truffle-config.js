@@ -14,7 +14,8 @@ TruffleConfig.networks.development = {
 TruffleConfig.networks.rinkeby.skipDryRun = true;
 TruffleConfig.networks.rinkeby.gasPrice = 1e11; // 100 Gwei
 
-TruffleConfig.networks.mainnet.gasPrice = 1e11; // 100 Gwei
+TruffleConfig.networks.mainnet.gasPrice = 226e9; // 160 Gwei
+TruffleConfig.networks.mainnet.networkCheckTimeout = 120000
 
 TruffleConfig.compilers = {
     solc: {

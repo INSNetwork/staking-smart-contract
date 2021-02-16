@@ -37,7 +37,7 @@ contract LPTokenWrapper {
 
 contract Unipool is LPTokenWrapper, Ownable {
     IERC20 public instar = IERC20(0x8193711b2763Bc7DfD67Da0d6C8c26642eafDAF3);
-    uint256 public constant DURATION = 30 days;
+    uint256 public constant DURATION = 45 days;
     
     uint public lockTime = 0;
     uint256 public periodFinish = 0;

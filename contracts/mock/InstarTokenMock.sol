@@ -5,6 +5,6 @@ import "./InstarToken.sol";
 contract InstarTokenMock is InstarToken {
 
     constructor(address _tokenBeneficiary) InstarToken() public {
-        _mint(_tokenBeneficiary, 1000000 * 1e18);
+        _mint(_tokenBeneficiary, 1000000 * 1e4);
     }
 }
