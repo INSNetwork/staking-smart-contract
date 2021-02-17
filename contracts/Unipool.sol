@@ -9,7 +9,7 @@ contract LPTokenWrapper {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    IERC20 public uniswapEthInstarToken = IERC20(0x645B2fEc49Bc950CbCfFB37ABbFe80Fe1E545B5A);
+    IERC20 public uniswapPairToken = IERC20(0xfa309661Aa46a5ed9fa6556FfF07F9A74A4894C6);
 
     uint256 private _totalSupply;
     mapping(address => uint256) private _balances;
@@ -25,13 +25,13 @@ contract LPTokenWrapper {
     function stake(uint256 amount) public {
         _totalSupply = _totalSupply.add(amount);
         _balances[msg.sender] = _balances[msg.sender].add(amount);
-        uniswapEthInstarToken.safeTransferFrom(msg.sender, address(this), amount);
+        uniswapPairToken.safeTransferFrom(msg.sender, address(this), amount);
     }
 
     function withdraw(uint256 amount) public {
         _totalSupply = _totalSupply.sub(amount);
         _balances[msg.sender] = _balances[msg.sender].sub(amount);
-        uniswapEthInstarToken.safeTransfer(msg.sender, amount);
+        uniswapPairToken.safeTransfer(msg.sender, amount);
     }
 }
 

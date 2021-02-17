@@ -17,8 +17,9 @@ module.exports = async function (deployer) {
 
         await deployer.deploy(UniswapTokenMock);
         const uniswapToken = await UniswapTokenMock.at(UniswapTokenMock.address);
-        await uniswapToken.mint(senderAccount, BN(1000).mul(BN(10).pow(BN(18))));
+        await uniswapToken.mint(senderAccount, BN(2000).mul(BN(10).pow(BN(18))));
 
+        await deployer.deploy(UnipoolMock, uniswapToken.address, InstarTokenMock.address);
         await deployer.deploy(UnipoolMock, uniswapToken.address, InstarTokenMock.address);
     }
 };
